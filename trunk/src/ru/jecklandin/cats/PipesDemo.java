@@ -13,10 +13,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.TextView;
+import ru.jecklandin.cats.*;
 
-public class PipesDemo extends Activity {
+public class PipesDemo extends Activity { 
 	
 	public static final String TAG = "ru.jecklandin.cats.PipesDemo";
+	
+	static {
+		System.loadLibrary("pipes");
+	} 
+	
+	private native int mkfifo(String pipe);
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,7 +32,7 @@ public class PipesDemo extends Activity {
         final TextView disp = new TextView(this);
 		disp.setText("0");
 		setContentView(disp);
-		
+		 
 		final String pipename = getDir("pipedemo", Context.MODE_WORLD_WRITEABLE).getAbsolutePath() + "/pipe";
 		final File pipe = new File(pipename);
 		
@@ -37,11 +44,18 @@ public class PipesDemo extends Activity {
 			};
 			 
 			protected Integer doInBackground(Void... params) {
+				
+				//create a pipe
+				if (mkfifo(pipename) == -1) {
+					Log.d(TAG, "Pipe error");
+					return -1;
+				} 
+				
 				FileInputStream fis;
 				try {
 					fis = new FileInputStream(pipe);
 					int res = 0;
-					while (res != -1) {
+					while (res != -1) { //blocks until someone write to this pipe
 						res = fis.read();
 						publishProgress(res);
 					}
@@ -55,6 +69,5 @@ public class PipesDemo extends Activity {
 		Intent i = new Intent(this, ProcessingService.class);
 		i.putExtra("fn", pipename);
 		startService(i);
-		
     }
 }
