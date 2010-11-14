@@ -15,13 +15,6 @@ public class ProcessingService extends Service {
 	}
 	
 	private native int process(String pipe);
-	private native int mkfifo(String pipe);
-	
-	@Override
-	public void onCreate() {
-		// TODO Auto-generated method stub
-		super.onCreate();
-	}
 	
 	@Override
 	public void onStart(Intent intent, int startId) {
@@ -32,10 +25,6 @@ public class ProcessingService extends Service {
 			
 			@Override
 			public void run() { 
-				if (mkfifo(pipename) == -1) {
-					Log.d(TAG, "Pipe error");
-					return;
-				} 
 				process(pipename);
 			}
 		}).start();

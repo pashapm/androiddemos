@@ -18,7 +18,7 @@ extern "C" {
 
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "PIPES_DEMO", __VA_ARGS__)
 
-JNIEXPORT jint JNICALL Java_ru_jecklandin_cats_ProcessingService_mkfifo
+JNIEXPORT jint JNICALL Java_ru_jecklandin_cats_PipesDemo_mkfifo
   (JNIEnv *env, jobject, jstring path) { 
   
     const char* cpath = env->GetStringUTFChars(path, NULL);
